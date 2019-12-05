@@ -22,7 +22,8 @@ __author__ = 'Eric Hanson'
 # +++your code here+++
 # Write functions and modify main() to call them
 def get_special_paths(dir):
-    """returns a list of the absolute paths of the special files in the given directory"""
+    """returns a list of the absolute paths of the
+    special files in the given directory"""
     file_list = []
     for dir_path, _, filenames in os.walk(dir):
         for f in filenames:
@@ -43,7 +44,6 @@ def copy_to(paths, dir):
 
 def zip_to(paths, zippath):
     """given a list of paths, zip those files up into the given zipfile"""
-    # zip -j tmp.zip /Users/piero/Documents/github/kenzie/backend-copy-special-assessment/xyz__hello__.txt /Users/piero/Documents/github/kenzie/backend-copy-special-assessment/zz__something__.jpg
     command = ['zip', '-j']
     zippath = [zippath]
     command_list = command + zippath + paths
@@ -51,9 +51,10 @@ def zip_to(paths, zippath):
     print('Command I am going to do:')
     print(' '.join(command_list))
     try:
-        subprocess.call(command_list)
-    except:
         subprocess.check_output(command_list)
+    except subprocess.CalledProcessError as e:
+        print('{}'.format(e.output))
+        exit(e.returncode)
 
 
 def main():
@@ -69,12 +70,13 @@ def main():
     # Read the docs and examples for the argparse module about how to do this.
 
     # Parsing command line arguments is a must-have skill.
-    # This is input data validation.  If something is wrong (or missing) with any
+    # This is input data validation.
+    # If something is wrong (or missing) with any
     # required args, the general rule is to print a usage message and exit(1).
 
     # +++your code here+++
     # Call your functions
-    
+
     source_dir, to_dir, to_zip = args.dir, args.todir, args.tozip
     if source_dir:
         file_list = get_special_paths(source_dir)
@@ -82,7 +84,7 @@ def main():
     if source_dir and to_dir:
         copy_to(file_list, to_dir)
 
-    if source_dir and to_zip:   
+    if source_dir and to_zip:
         zip_to(file_list, to_zip)
 
 
